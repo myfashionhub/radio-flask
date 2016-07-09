@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Small URLs</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+
+
+  {% assets "script" %}
+    <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+  {% endassets %}
+  {% assets "style" %}
+    <link rel="stylesheet" href="{{ ASSET_URL }}" />
+  {% endassets %}
+</head>
+
+<body>
+  <header>
+    <h1>Small URLs</h1>
+  </header>
+
+  {% block body %}
+  {% endblock %}
+
+  <footer>
+    Made by <a href="http://nessanguyen.com">Nessa Nguyen</a>
+  </footer>
+</body>
+</html>

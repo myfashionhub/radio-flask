@@ -1,0 +1,3 @@
+url_shortener/*.pyc
+url_shortener/static/.webassets-cache
+url_shortener/static/generated/

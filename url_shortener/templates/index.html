@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block body %}
+{{ super() }}
+
+
+<p>Paste a URL to shorten</p>
+
+<form action='/shorten' method='get'>
+  <input type='text' name='url'></input>
+  <button>Get short link</button>
+</form>
+
+{% endblock %}
