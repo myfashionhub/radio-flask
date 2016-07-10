@@ -7,4 +7,12 @@
 
 <p>Target: {{ link.target_url }}</p>
 
+<p>Clicks: {{ click_total }}</p>
+
+{% for click in clicks %}
+<ul>
+  <li>{{ click.created_at }}</li>
+</ul>
+{% endfor %}
+
 {% endblock %}
