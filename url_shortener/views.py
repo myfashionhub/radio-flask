@@ -31,9 +31,7 @@ def shorten():
 
 @app.route('/<regex("[a-z0-9]{8}"):key>/')
 def redirect_to_target(key):
-    link = db.get_link(key)
-    user_agent = request.user_agent
-
+    link = db.identify_target(request.user_agent, key)
     if link == None:
         return render_template('404.html')
     else:

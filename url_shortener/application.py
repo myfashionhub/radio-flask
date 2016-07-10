@@ -13,3 +13,9 @@ def create_session(database_url):
     session = Session()
     session._model_changes = {}
     return session 
+
+DEVICE_TYPES = {
+  'desktop': [ 'macos', 'windows', 'linux' ],
+  'tablet': [ 'ipad' ],
+  'mobile': [ 'iphone', 'android' ]
+}

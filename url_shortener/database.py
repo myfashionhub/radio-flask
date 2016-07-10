@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine
-from application import create_session
+from application import create_session, DEVICE_TYPES
 from models import ShortUrl, Click
 from config import DATABASE_URL
 import uuid
@@ -9,30 +9,25 @@ class Database():
         self.session = create_session(DATABASE_URL)
 
     def get_links_with_clicks(self, key):
-        links = self.session.query(ShortUrl) \
-                .filter(ShortUrl.key==key) \
-                .all()
+        links = self.session.query(ShortUrl).filter_by(key=key).all()
         link_ids = [link.id for link in links]
+
         click_query = self.session.query(Click) \
                       .filter(Click.short_url_id.in_(link_ids)) \
                       .order_by(Click.created_at)
 
         results = []
         for link in links:
-            query = click_query.filter(Click.short_url_id==link.id)
-            click_total = query.count()
-            clicks      = query.all()
+            query = click_query.filter_by(short_url_id=link.id)
             results.append( {
                 'link': link,
-                'click_total': click_total,
-                #clicks: clicks
+                'click_total': query.count()
             } )
         return results
 
     def find_or_create_short_url(self, target_url):
         link = self.session.query(ShortUrl) \
-               .filter(ShortUrl.target_url==target_url) \
-               .first()
+               .filter_by(target_url=target_url).first()
 
         if link == None:
             key = str(uuid.uuid4())[:8]
@@ -53,10 +48,6 @@ class Database():
         self.session.add(click)
         self.session.commit()
 
-    def query_clicks(self, link_ids):
-
-        return [ click_total, clicks ]
-
     def add_target(self, key, target_url, device_type):
         link = ShortUrl(
             key=key,
@@ -67,3 +58,21 @@ class Database():
         self.session.commit()
         return link
 
+    def identify_target(self, user_agent, key):
+        platform = user_agent.platform
+        device_type = None
+
+        for device in DEVICE_TYPES:
+            if platform in DEVICE_TYPES[device]:
+                device_type = device
+
+        link_query = self.session.query(ShortUrl).filter_by(key=key)
+        if device_type != None:
+            link = link_query \
+                   .filter(ShortUrl.user_agent=='device_type:'+device_type) \
+                   .first()
+
+        if device_type == None or link == None:
+            link = link_query.filter(ShortUrl.user_agent=='').first()
+
+        return link
