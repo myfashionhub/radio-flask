@@ -39,3 +39,10 @@ def save_short_url(target_url):
     session.commit()
     print "Saving short URL %s" % key
     return key
+
+@app.route('/links')
+def links():
+    links = []
+    for short_url in session.query(ShortUrl).order_by(ShortUrl.created_at):
+        links.append(short_url)
+    return render_template('links.html', links=links, domain=config.DOMAIN)

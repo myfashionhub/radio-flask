@@ -1,0 +1,8 @@
+{% extends "layout.html" %}
+
+{% block body %}
+{{ super() }}
+
+Your short URL is <a href="{{ url }}" target="_blank">{{ url.replace('http://', '') }}</a>
+
+{% endblock %}
