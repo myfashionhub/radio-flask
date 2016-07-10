@@ -6,7 +6,11 @@
 <table>
 {% for link in links %}
   <tr>
-    <td>{{ domain + link.key }}</td>
+    <td>
+      <a href="{{ domain + link.key }}" target="_blank">
+        {{ domain + link.key }}
+      </a>
+    </td>
     <td>{{ link.target_url }}</td>
     <td>Created {{ link.created_at }}</td>
     <td><a href="link/{{ link.key }}">View details</a></td>
