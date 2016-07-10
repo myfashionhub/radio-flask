@@ -5,14 +5,32 @@
 
 <p>Short URL is <a href="{{ short_url }}" target="_blank">{{ short_url.replace('http://', '') }}</a></p>
 
-<p>Target: {{ link.target_url }}</p>
-
-<p>Clicks: {{ click_total }}</p>
-
-{% for click in clicks %}
 <ul>
-  <li>{{ click.created_at }}</li>
-</ul>
+{% for result in results %}
+  <li>
+    <p>Device type: {{ result['link'].user_agent }}</p>
+    <p>Target: {{ result['link'].target_url }}</p>
+    <p>Clicks: {{ result.click_total }}</p>
+  </li>
 {% endfor %}
+</ul>
+
+<h3>Configure redirect URLs</h3>
+<button>Add new rule</button>
+
+<form action='/shorten' method="POST">
+  <label>Choose a device type</label>
+  <select name="device_type">
+    <option value="desktop">Desktop</option>
+    <option value="tablet">Tablet</option>
+    <option value="mobile">Mobile</option>
+  </select>
+
+  <label>Specify target URL</label>
+  <input type="hidden" name="key" value="{{results[0]['link'].key }}">
+  <input type="text" name="url">
+
+  <button>Save rule</button>
+</form>
 
 {% endblock %}
