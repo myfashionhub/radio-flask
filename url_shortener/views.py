@@ -16,10 +16,10 @@ def index():
 
 @app.route('/shorten', methods=['POST'])
 def shorten():
-    target_url = request.args.get('url')
-    key = save_short_url(target_url)
-    short_url = config.DOMAIN + key
-    return render_template('link.html', url=short_url)
+    target_url = request.form.get('url')
+    link = find_or_create_short_url(target_url)
+    short_url = config.DOMAIN + link.key
+    return render_template('link.html', link=link, short_url=short_url)
 
 @app.route('/<regex("[a-z0-9]{8}"):key>/')
 def redirect_to_target(key):
@@ -27,18 +27,22 @@ def redirect_to_target(key):
     if link == None:
         return render_template('404.html')
     else:
+        # update clicks
         return redirect(link.target_url)
 
-def save_short_url(target_url):
-    key = str(uuid.uuid4())[:8]
-    short_url = ShortUrl(
-      key=key,
-      target_url=target_url
-    )
-    session.add(short_url)
-    session.commit()
-    print "Saving short URL %s" % key
-    return key
+def find_or_create_short_url(target_url):
+    link = session.query(ShortUrl).filter(ShortUrl.target_url==target_url).first()
+
+    if link == None:
+        key = str(uuid.uuid4())[:8]
+        link = ShortUrl(
+          key=key,
+          target_url=target_url
+        )
+        session.add(link)
+        session.commit()
+
+    return link
 
 @app.route('/links')
 def links():
@@ -46,3 +50,10 @@ def links():
     for short_url in session.query(ShortUrl).order_by(ShortUrl.created_at):
         links.append(short_url)
     return render_template('links.html', links=links, domain=config.DOMAIN)
+
+@app.route('/link/<regex("[a-z0-9]{8}"):key>/')
+def show_link(key):
+    link = session.query(ShortUrl).filter(ShortUrl.key==key).first()
+    short_url = config.DOMAIN + link.key
+    # Find number of clicks
+    return render_template('link.html', link=link, short_url=short_url)

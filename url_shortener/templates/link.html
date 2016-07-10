@@ -3,6 +3,8 @@
 {% block body %}
 {{ super() }}
 
-Your short URL is <a href="{{ url }}" target="_blank">{{ url.replace('http://', '') }}</a>
+<p>Short URL is <a href="{{ short_url }}" target="_blank">{{ short_url.replace('http://', '') }}</a></p>
+
+<p>Target: {{ link.target_url }}</p>
 
 {% endblock %}

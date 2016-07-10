@@ -9,7 +9,8 @@
     <td>{{ domain + link.key }}</td>
     <td>{{ link.target_url }}</td>
     <td>Created {{ link.created_at }}</td>
-    <td>Clicks</td>
+    <td><a href="link/{{ link.key }}">View details</a></td>
+    <td><button>Remove URL</button></td>
   </tr>
 {% endfor %}
 </table>
