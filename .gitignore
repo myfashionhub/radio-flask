@@ -2,3 +2,5 @@ url_shortener/*.pyc
 url_shortener/static/.webassets-cache
 url_shortener/static/generated/
 *.db
+url_shortener/tests/__pycache__/
+url_shortener/tests/.cache/
