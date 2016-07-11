@@ -33,13 +33,7 @@ class Database():
             key = random_short_url()
             while self.url_key_exists(key):
                 key = random_short_url()
-            link = ShortUrl(
-                key=key,
-                target_url=target_url
-            )
-            self.session.add(link)
-            self.session.commit()
-
+            link = self.save_short_url(key, target_url)
         return link
 
     def save_click(self, link_id, referrer_url):
@@ -49,19 +43,19 @@ class Database():
         )
         self.session.add(click)
         self.session.commit()
+        return click
 
-    def add_target(self, key, target_url, device_type):
+    def save_short_url(self, key, target_url, criteria=None):
         link = ShortUrl(
             key=key,
             target_url=target_url,
-            criteria='device_type:' + device_type
+            criteria=criteria
         )
         self.session.add(link)
         self.session.commit()
         return link
 
-    def query_target(self, user_agent, key):
-        platform = user_agent.platform
+    def query_target(self, key, platform):
         device_type = None
 
         for type in DEVICE_TYPES:

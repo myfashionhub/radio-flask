@@ -23,13 +23,14 @@ def shorten():
     if key == None:
         link = db.find_or_create_short_url(target_url)
     else:
-        link = db.add_target(key, target_url, device_type)
+        criteria = 'device_type:' + device_type
+        link = db.save_short_url(key, target_url, criteria)
 
     return redirect('/link/'+link.key)
 
 @app.route('/<regex("[a-zA-Z0-9]{6}"):key>/')
 def redirect_to_target(key):
-    link = db.query_target(request.user_agent, key)
+    link = db.query_target(key, request.user_agent.platform)
     if link == None:
         return render_template('404.html')
     else:
