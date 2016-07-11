@@ -74,6 +74,6 @@ class Database():
                    .first()
 
         if device_type == None or link == None:
-            link = link_query.filter(ShortUrl.criteria=='').first()
+            link = link_query.filter(ShortUrl.criteria==None).first()
 
         return link

@@ -47,4 +47,9 @@ def show_link(key):
     short_url = config.DOMAIN + key
     results   = db.get_links_with_clicks(key)
 
-    return render_template( 'link.html', results=results, short_url=short_url )
+    if len(results) == 0:
+        return render_template('404.html')
+    else:
+        return render_template(
+                  'link.html', results=results, short_url=short_url
+               )
