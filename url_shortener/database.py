@@ -1,8 +1,9 @@
 from sqlalchemy import create_engine
+import uuid
+import logging
 from application import create_session, DEVICE_TYPES
 from models import ShortUrl, Click
 from config import DATABASE_URL
-import uuid
 
 class Database():
     def __init__(self):
@@ -52,27 +53,27 @@ class Database():
         link = ShortUrl(
             key=key,
             target_url=target_url,
-            user_agent='device_type:' + device_type
+            criteria='device_type:' + device_type
         )
         self.session.add(link)
         self.session.commit()
         return link
 
-    def identify_target(self, user_agent, key):
+    def query_target(self, user_agent, key):
         platform = user_agent.platform
         device_type = None
 
-        for device in DEVICE_TYPES:
-            if platform in DEVICE_TYPES[device]:
-                device_type = device
+        for type in DEVICE_TYPES:
+            if platform in DEVICE_TYPES[type]:
+                device_type = type
 
         link_query = self.session.query(ShortUrl).filter_by(key=key)
         if device_type != None:
             link = link_query \
-                   .filter(ShortUrl.user_agent=='device_type:'+device_type) \
+                   .filter(ShortUrl.criteria=='device_type:'+device_type) \
                    .first()
 
         if device_type == None or link == None:
-            link = link_query.filter(ShortUrl.user_agent=='').first()
+            link = link_query.filter(ShortUrl.criteria=='').first()
 
         return link

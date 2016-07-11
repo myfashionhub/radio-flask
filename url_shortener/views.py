@@ -26,12 +26,11 @@ def shorten():
     else:
         link = db.add_target(key, target_url, device_type)
 
-    short_url  = config.DOMAIN + link.key
-    return render_template('link.html', link=link, short_url=short_url)
+    return redirect('/link/'+link.key)
 
 @app.route('/<regex("[a-z0-9]{8}"):key>/')
 def redirect_to_target(key):
-    link = db.identify_target(request.user_agent, key)
+    link = db.query_target(request.user_agent, key)
     if link == None:
         return render_template('404.html')
     else:
