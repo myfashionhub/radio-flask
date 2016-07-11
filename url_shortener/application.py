@@ -2,7 +2,7 @@ from werkzeug.routing import BaseConverter
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from jinja2 import Undefined
-from . import app
+import random
 
 class RegexConverter(BaseConverter):
     def __init__(self, url_map, *items):
@@ -29,4 +29,12 @@ def sanitize_device(criteria):
 
     return criteria.replace('device_type:', '').capitalize()
 
-app.jinja_env.filters['sanitize_device'] = sanitize_device
+
+def random_short_url():
+    sequence = 'abcdefghijklmnopqrstuvwxyz' + \
+               'ABCDEFGHIJKLMNOPQRSTUVWXYZ' + \
+               '0123456789'
+    url = ''
+    for _ in range(6):
+         url += random.choice(sequence)
+    return url

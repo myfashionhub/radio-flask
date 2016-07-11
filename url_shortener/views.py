@@ -1,15 +1,14 @@
 from flask import render_template, redirect, request
 import logging
 from url_shortener import app
-from models import ShortUrl, Click
-import config
-from application import RegexConverter, create_session
+from application import RegexConverter, sanitize_device
 from database import Database
 
 
 app.url_map.converters['regex'] = RegexConverter
-db_session = create_session(config.DATABASE_URL)
-db = Database()
+app.jinja_env.filters['sanitize_device'] = sanitize_device
+db = Database(app.config['DATABASE_URL'])
+domain = app.config['DOMAIN']
 
 @app.route('/')
 def index():
@@ -28,7 +27,7 @@ def shorten():
 
     return redirect('/link/'+link.key)
 
-@app.route('/<regex("[a-z0-9]{8}"):key>/')
+@app.route('/<regex("[a-zA-Z0-9]{6}"):key>/')
 def redirect_to_target(key):
     link = db.query_target(request.user_agent, key)
     if link == None:
@@ -39,12 +38,12 @@ def redirect_to_target(key):
 
 @app.route('/links')
 def links():
-    links = db_session.query(ShortUrl).order_by(ShortUrl.created_at)
-    return render_template('links.html', links=links, domain=config.DOMAIN)
+    links = db.all_links()
+    return render_template('links.html', links=links, domain=domain)
 
-@app.route('/link/<regex("[a-z0-9]{8}"):key>/')
+@app.route('/link/<regex("[a-zA-Z0-9]{6}"):key>/')
 def show_link(key):
-    short_url = config.DOMAIN + key
+    short_url = domain + key
     results   = db.get_links_with_clicks(key)
 
     if len(results) == 0:

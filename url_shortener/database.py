@@ -1,13 +1,12 @@
 from sqlalchemy import create_engine
 import uuid
 import logging
-from application import create_session, DEVICE_TYPES
+from application import create_session, DEVICE_TYPES, random_short_url
 from models import ShortUrl, Click
-from config import DATABASE_URL
 
 class Database():
-    def __init__(self):
-        self.session = create_session(DATABASE_URL)
+    def __init__(self, database_url):
+        self.session = create_session(database_url)
 
     def get_links_with_clicks(self, key):
         links = self.session.query(ShortUrl).filter_by(key=key).all()
@@ -31,7 +30,9 @@ class Database():
                .filter_by(target_url=target_url).first()
 
         if link == None:
-            key = str(uuid.uuid4())[:8]
+            key = random_short_url()
+            while self.url_key_exists(key):
+                key = random_short_url()
             link = ShortUrl(
                 key=key,
                 target_url=target_url
@@ -66,6 +67,7 @@ class Database():
         for type in DEVICE_TYPES:
             if platform in DEVICE_TYPES[type]:
                 device_type = type
+                break
 
         link_query = self.session.query(ShortUrl).filter_by(key=key)
         if device_type != None:
@@ -77,3 +79,11 @@ class Database():
             link = link_query.filter(ShortUrl.criteria==None).first()
 
         return link
+
+    def all_links(self):
+        links = self.session.query(ShortUrl).order_by(ShortUrl.created_at)
+        return links
+
+    def url_key_exists(self, key):
+        link = self.session.query(ShortUrl).filter_by(key=key).first()
+        return link != None
