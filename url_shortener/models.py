@@ -2,7 +2,6 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
 from datetime import datetime
 from sqlalchemy import Table, Column, Integer, String, DateTime, ForeignKey, UniqueConstraint
-import config
 
 Base = declarative_base()
 
@@ -23,6 +22,3 @@ class Click(Base):
     created_at     = Column(DateTime, default=datetime.utcnow)
     short_url_id   = Column(Integer, ForeignKey('short_urls.id'))
     referrer_url   = Column(String(1024))
-
-engine = create_engine(config.DATABASE_URL, echo=False)
-Base.metadata.create_all(engine)
