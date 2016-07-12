@@ -1,11 +1,20 @@
 from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 import uuid
 import logging
-from application import create_session, DEVICE_TYPES, random_short_url
+from application import DEVICE_TYPES, random_short_url
 from models import ShortUrl, Click
+
+def create_session(database_url):
+    engine  = create_engine(database_url)
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    session._model_changes = {}
+    return session
 
 class Database():
     def __init__(self, database_url):
+        self.database_url = database_url
         self.session = create_session(database_url)
 
     def get_links_with_clicks(self, key):
