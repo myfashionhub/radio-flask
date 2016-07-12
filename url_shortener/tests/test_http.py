@@ -51,6 +51,11 @@ class TestHttp():
         assert response.history[-1].status_code == 301
         assert response.url == expected_url
 
+    def test_show_link(self):
+        link = self.db.all_links().first()
+        response = requests.get(self.base_url + 'link/' + link.key)
+        assert response.status_code == 200
+
     def test_redirect_to_target(self):
         link = self.db.all_links().first()
         response = requests.get(self.base_url + link.key)

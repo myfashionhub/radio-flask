@@ -4,3 +4,4 @@ url_shortener/static/generated/
 *.db
 url_shortener/tests/__pycache__/
 url_shortener/tests/.cache/
+.cache
