@@ -7,8 +7,8 @@
 {% for link in links %}
   <tr>
     <td>
-      <a href="{{ domain + link.key }}" target="_blank">
-        {{ domain + link.key }}
+      <a href="{{ base_url + link.key }}" target="_blank">
+        {{ base_url + link.key }}
       </a>
     </td>
     <td>{{ link.target_url }}</td>

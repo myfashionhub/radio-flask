@@ -7,8 +7,10 @@ from database import Database
 
 app.url_map.converters['regex'] = RegexConverter
 app.jinja_env.filters['sanitize_device'] = sanitize_device
+
 db = Database(app.config['DATABASE_URL'])
-domain = app.config['DOMAIN']
+base_url = app.config['BASE_URL']
+
 
 @app.route('/')
 def index():
@@ -40,11 +42,11 @@ def redirect_to_target(key):
 @app.route('/links')
 def links():
     links = db.all_links()
-    return render_template('links.html', links=links, domain=domain)
+    return render_template('links.html', links=links, base_url=base_url)
 
 @app.route('/link/<regex("[a-zA-Z0-9]{6}"):key>/')
 def show_link(key):
-    short_url = domain + key
+    short_url = base_url + key
     results   = db.get_links_with_clicks(key)
 
     if len(results) == 0:
