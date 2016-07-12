@@ -1,7 +1,7 @@
 from flask import render_template, redirect, request
 import logging
 from url_shortener import app
-from application import RegexConverter, sanitize_device
+from application import RegexConverter, sanitize_device, valid_url
 from database import Database
 
 
@@ -24,6 +24,8 @@ def shorten():
     target_url  = request.form.get('url')
     key         = request.form.get('key')
     device_type = request.form.get('device_type')
+    if not valid_url(target_url):
+        return "Invalid target URL"
 
     if key == None:
         link = db.find_or_create_short_url(target_url)

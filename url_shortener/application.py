@@ -1,5 +1,6 @@
 from werkzeug.routing import BaseConverter
 from jinja2 import Undefined
+from urlparse import urlparse
 import random
 
 class RegexConverter(BaseConverter):
@@ -29,3 +30,16 @@ def random_short_url():
     for _ in range(6):
          url += random.choice(sequence)
     return url
+
+def valid_url(url):
+    if len(url) == 0:
+         return False
+
+    try:
+        result = urlparse(url)
+        if [result.scheme, result.netloc, result.path]:
+            return True
+        else:
+            return False
+    except:
+        return False

@@ -5,4 +5,4 @@ DEBUG_MODE=True
 
 DATABASE_URL_TEST ='sqlite:///url_shortener_test.db'
 BASE_URL_TEST = 'http://localhost:8000/'
-TEST_MODE = True
+TEST_MODE = False
