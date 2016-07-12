@@ -60,3 +60,8 @@ def show_link(key):
         return render_template(
                   'link.html', results=results, short_url=short_url
                )
+
+@app.route('/link/<id>', methods=['POST'])
+def destroy_link(id):
+    db.destroy_link(id)
+    return redirect('/link')

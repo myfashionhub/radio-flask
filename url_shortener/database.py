@@ -14,7 +14,6 @@ def create_session(database_url):
 
 class Database():
     def __init__(self, database_url):
-        self.database_url = database_url
         self.session = create_session(database_url)
 
     def get_links_with_clicks(self, key):
@@ -90,3 +89,8 @@ class Database():
     def url_key_exists(self, key):
         link = self.session.query(ShortUrl).filter_by(key=key).first()
         return link != None
+
+    def destroy_link(self, id):
+        link = self.session.query(ShortUrl).filter_by(id=id).first()
+        self.session.delete(link)
+        self.session.commit()
