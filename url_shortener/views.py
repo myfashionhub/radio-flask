@@ -8,9 +8,12 @@ from database import Database
 app.url_map.converters['regex'] = RegexConverter
 app.jinja_env.filters['sanitize_device'] = sanitize_device
 
-db = Database(app.config['DATABASE_URL'])
-base_url = app.config['BASE_URL']
+suffix = ''
+if app.config['TEST_MODE']:
+    suffix = '_TEST'
 
+db = Database(app.config['DATABASE_URL%s' % suffix ])
+base_url = app.config['BASE_URL%s' % suffix]
 
 @app.route('/')
 def index():
