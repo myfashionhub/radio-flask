@@ -10,6 +10,16 @@ URL Shortener
 - Run the app: `python run.py`   
 - Application is available at `localhost:5000`  
 
+- If you run into module import error, you can try running the app in virtualenv:
+```sh
+$ pip install virtualenv
+$ virtualenv url_shortener
+$ . url_shortener/bin/activate
+$ pip install -r requirements.txt
+$ python run.py
+$ deactivate      # Exit virtualenv
+```
+
 - The home page has a form that allows you to input target URLs and create short links. If the target URL is valid, a short URL is created, user is redirected to the edit page.
 
 - On the edit page, user can add target URL to the current short link based on the device type (based on [Werkzeug's doc on platform types](http://werkzeug.pocoo.org/docs/0.11/utils/#module-werkzeug.useragents)).
